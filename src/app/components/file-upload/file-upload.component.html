@@ -1,0 +1,50 @@
+<div class="container mt-5">
+
+  <div class="card shadow-lg">
+
+    <div class="card-body p-5">
+
+      <h2 class="text-center mb-4">
+        Stock Screening Tool
+      </h2>
+
+      <div class="mb-4">
+
+        <label class="form-label">
+          Upload Excel File
+        </label>
+
+        <input
+          type="file"
+          class="form-control"
+          accept=".xlsx,.xls"
+          (change)="onFileSelected($event)"
+        />
+      </div>
+
+      <div class="d-grid">
+
+        <button
+          class="btn btn-primary btn-lg"
+          (click)="filterFile()"
+          [disabled]="loading">
+
+          {{ loading ? 'Processing...' : 'Filter Securities' }}
+
+        </button>
+
+      </div>
+
+      <div
+        *ngIf="successMessage"
+        class="alert alert-success mt-4">
+
+        {{ successMessage }}
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
