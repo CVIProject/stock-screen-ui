@@ -1,50 +1,83 @@
-<div class="container mt-5">
-
-  <div class="card shadow-lg">
-
-    <div class="card-body p-5">
-
-      <h2 class="text-center mb-4">
-        Stock Screening Tool
-      </h2>
-
-      <div class="mb-4">
-
-        <label class="form-label">
-          Upload Excel File
-        </label>
-
-        <input
-          type="file"
-          class="form-control"
-          accept=".xlsx,.xls"
-          (change)="onFileSelected($event)"
-        />
-      </div>
-
-      <div class="d-grid">
-
-        <button
-          class="btn btn-primary btn-lg"
-          (click)="filterFile()"
-          [disabled]="loading">
-
-          {{ loading ? 'Processing...' : 'Filter Securities' }}
-
-        </button>
-
-      </div>
-
-      <div
-        *ngIf="successMessage"
-        class="alert alert-success mt-4">
-
-        {{ successMessage }}
-
-      </div>
-
-    </div>
-
+<!-- Full Screen Loader Overlay -->
+<div *ngIf="loading" class="loader-overlay">
+  <div class="loader-container">
+    <div class="spinner-animation"></div>
+    <p class="loader-text">Processing your file...</p>
+    <p class="loader-subtext">Please wait, this may take a moment</p>
   </div>
+</div>
 
+<!-- Toast Notifications Container -->
+<div class="toast-container">
+  <div
+    *ngFor="let toast of toasts"
+    class="toast-notification"
+    [ngClass]="'toast-' + toast.type">
+    <div class="toast-content">
+      <i
+        class="toast-icon"
+        [ngClass]="toast.type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'"></i>
+      <span class="toast-message">{{ toast.message }}</span>
+    </div>
+    <button
+      class="toast-close"
+      (click)="removeToast(toast.id)">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+</div>
+
+<div class="file-upload-wrapper" [class.disabled]="loading">
+  <div class="upload-container">
+    <div class="card upload-card">
+      <div class="card-body p-5">
+        <!-- Icon -->
+        <div class="text-center mb-4">
+          <i class="fas fa-file-excel" style="font-size: 48px; color: #667eea;"></i>
+        </div>
+
+        <!-- Title -->
+        <h3 class="text-center mb-2 fw-bold">Upload Excel File</h3>
+        <p class="text-center text-muted mb-4">Upload your stock data file to get started</p>
+
+        <!-- File Input Area -->
+        <div class="file-input-wrapper mb-4">
+          <div class="file-input-box">
+            <input
+              type="file"
+              class="file-input"
+              id="fileInput"
+              accept=".xlsx,.xls"
+              (change)="onFileSelected($event)"
+              [disabled]="loading"
+            />
+            <label for="fileInput" class="file-input-label">
+              <i class="fas fa-cloud-upload-alt me-2"></i>
+              <span class="d-block">Click to upload or drag and drop</span>
+              <small class="text-muted">Excel files (.xlsx, .xls)</small>
+            </label>
+          </div>
+          <div *ngIf="selectedFile" class="mt-2 alert alert-info d-flex align-items-center">
+            <i class="fas fa-check-circle me-2"></i>
+            <span>{{ selectedFile.name }}</span>
+          </div>
+        </div>
+
+        <!-- Filter Button -->
+        <div class="d-grid">
+          <button
+            class="btn btn-filter btn-lg"
+            (click)="filterFile()"
+            [disabled]="loading || !selectedFile">
+            <span *ngIf="!loading">
+              <i class="fas fa-filter me-2"></i>Filter Securities
+            </span>
+            <span *ngIf="loading">
+              <i class="fas fa-spinner fa-spin me-2"></i>Processing...
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

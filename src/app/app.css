@@ -1,0 +1,51 @@
+/* Header Styling */
+.navbar-header {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-header .navbar-brand {
+	color: white !important;
+	font-size: 20px;
+	font-weight: 700;
+	transition: all 0.3s ease;
+	letter-spacing: 0.5px;
+}
+
+.navbar-header .navbar-brand:hover {
+	transform: scale(1.05);
+}
+
+.navbar-header .navbar-brand i {
+	color: #667eea;
+}
+
+/* Main Content Area */
+.main {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 40px 20px;
+}
+
+/* Footer Styling */
+footer {
+	background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	margin-top: auto;
+}
+
+footer p {
+	font-size: 13px;
+	letter-spacing: 0.3px;
+}
+
+/* Global Layout */
+:host {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+}
