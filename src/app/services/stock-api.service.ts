@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,22 +7,23 @@ import { Observable } from 'rxjs';
 })
 export class StockApiService {
 
-   private apiUrl = 'http://localhost:8000/screen';
+  private apiUrl = 'http://localhost:8000/filter';
 
   constructor(private http: HttpClient) {}
 
-  uploadExcel(file: File): Observable<Blob> {
-
+  uploadExcel(stockFile: File, biblicalFile: File): Observable<HttpResponse<Blob>> {
     const formData = new FormData();
 
-    formData.append('file', file);
+    formData.append('stock_file', stockFile);
+    formData.append('biblical_file', biblicalFile);
 
     return this.http.post(
       this.apiUrl,
       formData,
       {
+        observe: 'response',
         responseType: 'blob'
       }
-    );
+    ) as Observable<HttpResponse<Blob>>;
   }
 }

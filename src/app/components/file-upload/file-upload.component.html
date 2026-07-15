@@ -40,26 +40,49 @@
         <h3 class="text-center mb-2 fw-bold">Upload Excel File</h3>
         <p class="text-center text-muted mb-4">Upload your stock data file to get started</p>
 
-        <!-- File Input Area -->
+        <!-- Stock File Input Area -->
         <div class="file-input-wrapper mb-4">
           <div class="file-input-box">
             <input
               type="file"
               class="file-input"
-              id="fileInput"
+              id="stockFileInput"
               accept=".xlsx,.xls"
-              (change)="onFileSelected($event)"
+              (change)="onStockFileSelected($event)"
               [disabled]="loading"
             />
-            <label for="fileInput" class="file-input-label">
+            <label for="stockFileInput" class="file-input-label">
               <i class="fas fa-cloud-upload-alt me-2"></i>
-              <span class="d-block">Click to upload or drag and drop</span>
+              <span class="d-block">Stock Excel</span>
               <small class="text-muted">Excel files (.xlsx, .xls)</small>
             </label>
           </div>
-          <div *ngIf="selectedFile" class="mt-2 alert alert-info d-flex align-items-center">
+          <div *ngIf="selectedStockFile" class="mt-2 alert alert-info d-flex align-items-center">
             <i class="fas fa-check-circle me-2"></i>
-            <span>{{ selectedFile.name }}</span>
+            <span>{{ selectedStockFile.name }}</span>
+          </div>
+        </div>
+
+        <!-- Biblical Screening File Input Area -->
+        <div class="file-input-wrapper mb-4">
+          <div class="file-input-box">
+            <input
+              type="file"
+              class="file-input"
+              id="biblicalFileInput"
+              accept=".xlsx,.xls"
+              (change)="onBiblicalFileSelected($event)"
+              [disabled]="loading"
+            />
+            <label for="biblicalFileInput" class="file-input-label">
+              <i class="fas fa-cloud-upload-alt me-2"></i>
+              <span class="d-block">Biblical Screening Excel</span>
+              <small class="text-muted">Excel files (.xlsx, .xls)</small>
+            </label>
+          </div>
+          <div *ngIf="selectedBiblicalFile" class="mt-2 alert alert-info d-flex align-items-center">
+            <i class="fas fa-check-circle me-2"></i>
+            <span>{{ selectedBiblicalFile.name }}</span>
           </div>
         </div>
 
@@ -68,7 +91,7 @@
           <button
             class="btn btn-filter btn-lg"
             (click)="filterFile()"
-            [disabled]="loading || !selectedFile">
+            [disabled]="loading || !selectedStockFile || !selectedBiblicalFile">
             <span *ngIf="!loading">
               <i class="fas fa-filter me-2"></i>Filter Securities
             </span>
