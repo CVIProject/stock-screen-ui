@@ -1,11 +1,9 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { catchError, finalize, timeout } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import { StockApiService } from '../../services/stock-api.service';
-import { RegimeUploadComponent } from '../regime-upload/regime-upload.component';
 
 interface Toast {
   id: string;
@@ -15,21 +13,17 @@ interface Toast {
 }
 
 @Component({
-  selector: 'app-file-upload',
+  selector: 'app-regime-upload',
   standalone: true,
-  imports: [CommonModule, RegimeUploadComponent],
-  templateUrl: './file-upload.component.html',
-  styleUrls: ['./file-upload.component.css'],
+  imports: [CommonModule],
+  templateUrl: './regime-upload.component.html',
+  styleUrls: ['./regime-upload.component.css'],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class FileUploadComponent {
-
-  selectedStockFile?: File | null;
-  selectedBiblicalFile?: File | null;
-
+export class RegimeUploadComponent {
+  selectedRegimeFile?: File | null;
   loading = false;
   errorMessage: string | null = null;
-
   toasts: Toast[] = [];
 
   constructor(
@@ -37,30 +31,19 @@ export class FileUploadComponent {
     private router: Router
   ) {}
 
-  onStockFileSelected(event: Event) {
+  onRegimeFileSelected(event: Event) {
     const input = event.target as HTMLInputElement | null;
-    this.selectedStockFile = input?.files?.[0] ?? null;
+    this.selectedRegimeFile = input?.files?.[0] ?? null;
   }
 
-  onBiblicalFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement | null;
-    this.selectedBiblicalFile = input?.files?.[0] ?? null;
-  }
-
-  filterFile() {
-    console.log('FileUploadComponent filterFile start', {
-      selectedStockFile: !!this.selectedStockFile,
-      selectedBiblicalFile: !!this.selectedBiblicalFile,
+  continueWithRegime() {
+    console.log('RegimeUploadComponent continueWithRegime start', {
+      selectedRegimeFile: !!this.selectedRegimeFile,
       online: navigator.onLine
     });
 
-    if (!this.selectedStockFile) {
-      this.showToast('Please select the Stock Excel file before submitting.', 'error');
-      return;
-    }
-
-    if (!this.selectedBiblicalFile) {
-      this.showToast('Please select the Biblical Screening Excel file before submitting.', 'error');
+    if (!this.selectedRegimeFile) {
+      this.showToast('Please select the Regime Excel file before submitting.', 'error');
       return;
     }
 
@@ -73,12 +56,11 @@ export class FileUploadComponent {
     this.errorMessage = null;
     this.loading = true;
 
-    this.stockApiService
-      .uploadExcel(this.selectedStockFile, this.selectedBiblicalFile)
+    this.stockApiService.uploadRegimeFile(this.selectedRegimeFile)
       .pipe(
         timeout(20000),
         catchError(error => {
-          console.error('FileUploadComponent request timeout or error', error);
+          console.error('RegimeUploadComponent request timeout or error', error);
           return throwError(() => error);
         }),
         finalize(() => {
@@ -87,7 +69,7 @@ export class FileUploadComponent {
       )
       .subscribe({
         next: async (response: HttpResponse<Blob>) => {
-          console.log('FileUploadComponent upload success', response);
+          console.log('RegimeUploadComponent upload success', response);
           const contentType = response.headers.get('content-type') ?? '';
           const body = response.body as Blob;
 
@@ -110,39 +92,26 @@ export class FileUploadComponent {
           const blob = new Blob([body], {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           });
-
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
-          link.download = this.getDownloadFileName(response) ?? 'filtered_output.xlsx';
+          link.download = this.getDownloadFileName(response) ?? 'regime_output.xlsx';
           link.click();
 
           setTimeout(() => {
-            try {
-              window.URL.revokeObjectURL(url);
-            } catch (e) {
-              // ignore revoke errors
+            window.URL.revokeObjectURL(url);
+            this.loading = false;
+            this.selectedRegimeFile = null;
+            const input = document.getElementById('regimeFileInput') as HTMLInputElement | null;
+            if (input) {
+              input.value = '';
             }
-
-            this.selectedStockFile = null;
-            this.selectedBiblicalFile = null;
-
-            const stockInputEl = document.getElementById('stockFileInput') as HTMLInputElement | null;
-            if (stockInputEl) {
-              try { stockInputEl.value = ''; } catch (e) { /* ignore */ }
-            }
-
-            const biblicalInputEl = document.getElementById('biblicalFileInput') as HTMLInputElement | null;
-            if (biblicalInputEl) {
-              try { biblicalInputEl.value = ''; } catch (e) { /* ignore */ }
-            }
-
             this.router.navigate(['/success']);
           }, 250);
         },
         error: (error: any) => {
-          console.error('FileUploadComponent API error', error);
-          this.errorMessage = this.extractErrorMessage(error, 'Error processing files. Please try again.');
+          console.error('RegimeUploadComponent API error', error);
+          this.errorMessage = this.extractErrorMessage(error, 'Error processing the regime file. Please try again.');
           this.showToast(this.errorMessage, 'error');
         }
       });
@@ -188,7 +157,6 @@ export class FileUploadComponent {
   private getDownloadFileName(response: HttpResponse<Blob>): string | null {
     const contentDisposition = response.headers.get('content-disposition') ?? '';
     const utf8FilenameMatch = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
-
     if (utf8FilenameMatch?.[1]) {
       return decodeURIComponent(utf8FilenameMatch[1]);
     }
@@ -200,22 +168,11 @@ export class FileUploadComponent {
   showToast(message: string, type: 'success' | 'error') {
     console.log('showToast', { message, type });
     const id = Date.now().toString();
-    const toast: Toast = {
-      id,
-      type,
-      message,
-      visible: true
-    };
-
-    this.toasts.push(toast);
-
-    // Auto remove toast after 5 seconds
-    setTimeout(() => {
-      this.removeToast(id);
-    }, 5000);
+    this.toasts.push({ id, type, message, visible: true });
+    setTimeout(() => this.removeToast(id), 5000);
   }
 
   removeToast(id: string) {
-    this.toasts = this.toasts.filter(t => t.id !== id);
+    this.toasts = this.toasts.filter(toast => toast.id !== id);
   }
 }

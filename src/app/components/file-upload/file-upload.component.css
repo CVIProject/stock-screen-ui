@@ -1,3 +1,18 @@
+.upload-options {
+  display: grid;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  overflow-x: auto;
+}
+
+.upload-options > app-regime-upload,
+.upload-options > .file-upload-wrapper {
+  min-width: 0;
+}
+
 /* File Upload Wrapper */
 .file-upload-wrapper {
   width: 100%;
@@ -11,6 +26,7 @@
 }
 
 .upload-container {
+  width: 100%;
   max-width: 550px;
   margin: 0 auto;
 }
@@ -208,6 +224,35 @@
 }
 
 /* Toast Notifications */
+.error-banner {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 320px;
+  max-width: calc(100% - 40px);
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #f87171;
+  color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  font-weight: 600;
+}
+
+.error-banner button {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  margin-left: 16px;
+}
+
 .toast-container {
   position: fixed;
   top: 30px;

@@ -7,6 +7,12 @@
   </div>
 </div>
 
+<!-- Error Banner -->
+<div *ngIf="errorMessage" class="error-banner">
+  <span>{{ errorMessage }}</span>
+  <button type="button" aria-label="Close error" (click)="errorMessage = null">&times;</button>
+</div>
+
 <!-- Toast Notifications Container -->
 <div class="toast-container">
   <div
@@ -27,8 +33,9 @@
   </div>
 </div>
 
-<div class="file-upload-wrapper" [class.disabled]="loading">
-  <div class="upload-container">
+<div class="upload-options">
+  <div class="file-upload-wrapper" [class.disabled]="loading">
+    <div class="upload-container">
     <div class="card upload-card">
       <div class="card-body p-5">
         <!-- Icon -->
@@ -37,7 +44,7 @@
         </div>
 
         <!-- Title -->
-        <h3 class="text-center mb-2 fw-bold">Upload Excel File</h3>
+        <h3 class="text-center mb-2 fw-bold">Stocks Filtering</h3>
         <p class="text-center text-muted mb-4">Upload your stock data file to get started</p>
 
         <!-- Stock File Input Area -->
@@ -102,5 +109,7 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
+  <app-regime-upload></app-regime-upload>
 </div>

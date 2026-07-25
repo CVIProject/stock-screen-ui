@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class StockApiService {
 
-  private apiUrl = 'http://localhost:8000/filter';
+  private apiUrl = 'http://localhost:8000/api/screener/filter';
+  private regimeApiUrl = 'http://localhost:8000/api/regime/continue';
 
   constructor(private http: HttpClient) {}
 
@@ -19,6 +20,20 @@ export class StockApiService {
 
     return this.http.post(
       this.apiUrl,
+      formData,
+      {
+        observe: 'response',
+        responseType: 'blob'
+      }
+    ) as Observable<HttpResponse<Blob>>;
+  }
+
+  uploadRegimeFile(regimeFile: File): Observable<HttpResponse<Blob>> {
+    const formData = new FormData();
+    formData.append('file', regimeFile);
+
+    return this.http.post(
+      this.regimeApiUrl,
       formData,
       {
         observe: 'response',
