@@ -1,9 +1,10 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
+import { catchError, finalize, timeout } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { StockApiService } from '../../services/stock-api.service';
+import { throwError } from 'rxjs';
 
 interface Toast {
   id: string;

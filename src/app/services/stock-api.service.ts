@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StockApiService {
 
-  private apiUrl = 'http://localhost:8000/api/screener/filter';
-  private regimeApiUrl = 'http://localhost:8000/api/regime/continue';
+  private apiUrl = `${environment.apiUrl}/api/screener/filter`;
+  private regimeApiUrl = `${environment.apiUrl}/api/regime/continue`;
 
   constructor(private http: HttpClient) {}
 
