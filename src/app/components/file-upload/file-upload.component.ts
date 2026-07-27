@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { catchError, finalize, timeout } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { StockApiService } from '../../services/stock-api.service';
 import { RegimeUploadComponent } from '../regime-upload/regime-upload.component';
@@ -76,7 +76,6 @@ export class FileUploadComponent {
     this.stockApiService
       .uploadExcel(this.selectedStockFile, this.selectedBiblicalFile)
       .pipe(
-        timeout(20000),
         catchError(error => {
           console.error('FileUploadComponent request timeout or error', error);
           return throwError(() => error);
