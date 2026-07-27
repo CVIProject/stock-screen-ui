@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { catchError, finalize, timeout } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { StockApiService } from '../../services/stock-api.service';
 import { throwError } from 'rxjs';
@@ -59,7 +59,6 @@ export class RegimeUploadComponent {
 
     this.stockApiService.uploadRegimeFile(this.selectedRegimeFile)
       .pipe(
-        timeout(20000),
         catchError(error => {
           console.error('RegimeUploadComponent request timeout or error', error);
           return throwError(() => error);
